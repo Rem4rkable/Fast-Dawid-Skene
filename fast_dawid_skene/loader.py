@@ -44,7 +44,7 @@ class DataLoader:
             self.data_path = data_dir
         else:
             self.data_path = os.path.join(
-                config.root_dir, 'data', dataset + '_dataset')
+                config.root_dir, 'deem', dataset + '_dataset')
         if crowd_annotations_path is not None:
             self.crowd_path = crowd_annotations_path
         else:

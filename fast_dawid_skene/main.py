@@ -49,12 +49,19 @@ def run(args):
     result_annotations['Annotation'] = result_annotations[
         'Annotation'].map(ind_to_annotation_dict)
 
-    if args.print_result:
-        print("Predictions:")
-        print(result_annotations)
-        if args.mode == 'test':
-            print("Accuracy:")
-            print(accuracy)
+    if args.a:
+        print(f"---- Seed {args.seed} ----")
+        print(f"Accuracy: {accuracy}")
+    else:
+        if args.print_result:
+            print(f"---- Seed {args.seed} ----")
+            print("Predictions:")
+            print(result_annotations)
+            if args.mode == 'test':
+                print("Accuracy:")
+                print(accuracy)
     if args.output is not None:
         utils.to_csv(result, args.output,
                      ind_to_question_dict, ind_to_annotation_dict)
+        
+    return accuracy

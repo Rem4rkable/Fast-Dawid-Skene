@@ -27,8 +27,26 @@ import os
 import sys
 import numpy as np
 
+def compute_mean_std(accuracies,verbose=True):
+    """
+    Computes the mean and standard deviation of a list of accuracies.
+    
+    Args:
+        accuracies (list): A list of accuracy values.
+    
+    Returns:
+        tuple: A tuple containing the mean and standard deviation of the accuracies.
+    """
+    mean = np.mean(accuracies) 
+    std = np.std(accuracies)
+    if verbose:
+        print('^Accs^')
+        print(f"Mean accuracy: {mean:.4f} ± {std:.4f}")
+        print(f"Mean accuracy * 100: {mean * 100:.4f} ± {std * 100:.4f}")
+    return mean, std
 
 def main():
+    accuracies = []
     parser = argparse.ArgumentParser(
         description='Run the Dawid-Skene, Fast Dawid-Skene, the Hybrid, or the Majority Voting Algorithm')
     parser.add_argument('--dataset', type=str, required=True,
@@ -53,12 +71,26 @@ def main():
                         help='Prints the predictions and accuracy to standard output, if set')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Run in verbose mode', dest='verbose')
+    parser.add_argument('-a', '--all', action='store_true',
+                        help='Run 3 seeds', dest='a', default=False)
     args = parser.parse_args()
-    np.random.seed(args.seed)
-    run(args)
+
+    if args.a:
+        for i in range (0,3):
+            args.seed = i
+            np.random.seed(args.seed)
+            accuracies.append(run(args))
+    else:
+        np.random.seed(args.seed)
+        accuracies.append(run(args))
+
+    compute_mean_std(accuracies=accuracies)
 
 if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, os.path.join(current_dir, '..'))
     from fast_dawid_skene.main import run
     main()
+
+
+# Example python scripts/fast_dawid_skene.py --dataset mixedclf_test --mode test --algorithm H --seed 0 -a   
